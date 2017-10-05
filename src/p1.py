@@ -38,13 +38,30 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     while pending_heap:
         curr_cell = heappop(pending_heap)
         if curr_cell[1] == destination:
-            # need to calculate path and return it here
+                
             if (DEBUG == True):
                 print("Success! Path found! Distance: ")
                 print(curr_cell[0])
                 #print("Prev visited: ")
                 #print(prev_visited)
-                return
+                
+                
+            # calculate path
+            if (curr_cell[3] != "not_discovered") and (curr_cell[3] != None):
+                ret_list = []
+                ret_list.append(curr_cell[1]) # add current cell to path list
+                temp = curr_cell[3] #parent of current cell
+                while True:
+                    ret_list.insert(0, temp)
+                    parent_temp = next(x for x in prev_visited if x[1] == temp) # find parent of temp
+                    if parent_temp != source_cell: # if there are still more steps in the path, then:
+                        temp = parent_temp[3]
+                    else: # we finished the path, now exit
+                        if ( DEBUG == True):
+                            print("Shortest path: ")
+                            print(ret_list)
+                        return ret_list
+            
         else:
             neighboor_list = adj(graph, curr_cell[1]) # pass coordinates of current cell to navigation edges, to find all neighboors
             for adj_cell in neighboor_list:

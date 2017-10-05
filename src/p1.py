@@ -3,6 +3,7 @@ from math import inf, sqrt
 from heapq import heappop, heappush
 DEBUG = True;
 
+
 def dijkstras_shortest_path(initial_position, destination, graph, adj):
     """ Searches for a minimal cost path through a graph using Dijkstra's algorithm.
 
@@ -21,6 +22,18 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     print(adj(graph, initial_position))
     pass
 
+
+def relax(level, curr_cell):
+    if(DEBUG == True)
+        curr_cell = tuple(20, tuple(3, 1))
+	#Discovers the distance of adjacent cells, and if discovered distance is less than a previously discovered distance, updates distance
+	list_adj = navigation_edges(level, curr_cell)
+	#add cur_cell weight to each in list_adj
+    
+	#for each in list_adj look for point in heap
+	#if heap{point} > list_adj{point} set to list_adj{point}
+	
+	
 
 def dijkstras_shortest_path_to_all(initial_position, graph, adj):
     """ Calculates the minimum cost to every reachable cell in a graph from the initial_position.
@@ -61,6 +74,7 @@ def navigation_edges(level, cell):
     for i in range(-1,2):
         for j in range(-1, 2):
             try:
+                if i == 0 and j == 0: continue
                 neighbor_cell = list();
                 neighbor_cell.append(cell[0] + i);
                 neighbor_cell.append(cell[1] + j);
@@ -72,17 +86,22 @@ def navigation_edges(level, cell):
                     neighbor_weight = 1;
                 if abs(i+j)% 2 == 1:
                     neighbor_weight *= sqrt2;
-                tple = (neighbor_cell), neighbor_weight
+                tple = (neighbor_weight, tuple(neighbor_cell))
                 return_list.append( tple)
             except IndexError:
                 print("whoops out of bounds!")
-    print(return_list)
+                
+    if (DEBUG == True):
+        print("Printing return_list from nav_edges: ")
+        print(return_list)
+    
+    return(return_list)
     #print(list(level["walls"])[0:5]);               # (x,y) [(11, 11), (14, 4)]
     #print(list(level["spaces"].items())[0:5]);      # ((x,y), weight) [((1, 1), 3.0), ((2, 1), 2.0)]
     #print(list(level["waypoints"].items())[0:5]);   # (waypoint, (x,y)) [('b', (18, 2)), ('e', (8, 6))]
 
 
-
+	
     pass
 
 
@@ -137,7 +156,7 @@ def cost_to_all_cells(filename, src_waypoint, output_filename):
 
 if __name__ == '__main__':
     filename, src_waypoint, dst_waypoint = '../input/example.txt', 'a','e'
-
+    
     # Use this function call to find the route between two waypoints.
     test_route(filename, src_waypoint, dst_waypoint)
 

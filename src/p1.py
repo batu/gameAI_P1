@@ -19,22 +19,47 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         Otherwise, return None.
 
     """
+    # create heap to store pending cells
+    pending_heap = []
+    
+    
+    # establish start of path such that:
+    # cell = tuple(distance from start, coordinate, state (v for visited, uv for unvisited), parent coordinate)
+    source_cell = [0, initial_position, "v", None]
+    source_cell = tuple(source_cell)
+    if (DEBUG == True):
+        print("Source Cell: ")
+        print(source_cell)
+        #heappush(pending_heap, (2.0, (2, 9), "uv", "not_discovered"))
+    
+    heappush(pending_heap, source_cell)
+    
+    while pending_heap:
+        curr_cell = heappop(pending_heap)
+        if curr_cell[1] == destination:
+            # need to calculate path and return it here
+            if (DEBUG == True):
+                print("Success! Path found!")
+                return
+        else:
+            neighboor_list = adj(graph, curr_cell[1]) # pass coordinates of current cell to navigation edges, to find all neighboors
+            for adj_cell in neighboor_list:
+                adj_cell[0] = adj_cell[0] + curr_cell[0] # add current distance to neighboor distances for comparison
+                
+                #check if cell already in heap
+                prev_queued = next((x for x in pending_heap if x[1] == adj_cell[1]), None)
+                if prev_queued: 
+                    # if true, compare distances. If new path yields shorter distance, update
+                    if prev_queued[0] > adj_cell[0]:
+                        prev_queued[0] = adj_cell[0]
+                        
+                else: # not already in heap, so we need to add it
+                    heappush(pending_heap, adj_cell)
+                    
     print(adj(graph, initial_position))
     pass
-
-
-def relax(level, curr_cell):
-    if(DEBUG == True)
-        curr_cell = tuple(20, tuple(3, 1))
-	#Discovers the distance of adjacent cells, and if discovered distance is less than a previously discovered distance, updates distance
-	list_adj = navigation_edges(level, curr_cell)
-	#add cur_cell weight to each in list_adj
-    
-	#for each in list_adj look for point in heap
-	#if heap{point} > list_adj{point} set to list_adj{point}
 	
-	
-
+    [1]
 def dijkstras_shortest_path_to_all(initial_position, graph, adj):
     """ Calculates the minimum cost to every reachable cell in a graph from the initial_position.
 
@@ -86,14 +111,13 @@ def navigation_edges(level, cell):
                     neighbor_weight = 1;
                 if abs(i+j)% 2 == 1:
                     neighbor_weight *= sqrt2;
-                tple = (neighbor_weight, tuple(neighbor_cell))
+                tple = list((neighbor_weight, tuple(neighbor_cell), "uv", "not_discovered")) # we need something here to determine if cell has been previously visited, or is a wall, and thus needs no further consideration. 
                 return_list.append( tple)
             except IndexError:
                 print("whoops out of bounds!")
                 
     if (DEBUG == True):
-        print("Printing return_list from nav_edges: ")
-        print(return_list)
+        print("Returning return_list from nav_edges: ")
     
     return(return_list)
     #print(list(level["walls"])[0:5]);               # (x,y) [(11, 11), (14, 4)]

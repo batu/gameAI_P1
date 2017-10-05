@@ -21,6 +21,8 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     """
     # create heap to store pending cells
     pending_heap = []
+    # create list to store visited cells
+    prev_visited = []
     
     
     # establish start of path such that:
@@ -43,6 +45,7 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         else:
             neighboor_list = adj(graph, curr_cell[1]) # pass coordinates of current cell to navigation edges, to find all neighboors
             for adj_cell in neighboor_list:
+                if any(i[1] == adj_cell[1] for i in prev_visited): continue
                 adj_cell[0] = adj_cell[0] + curr_cell[0] # add current distance to neighboor distances for comparison
                 
                 #check if cell already in heap
@@ -57,8 +60,9 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
                     adj_cell[3] = curr_cell[1] # set current cell as parent
                     heappush(pending_heap, adj_cell)
                     
-        # finally, mark current cell as visited
+        # finally, mark current cell as visited and add to prev_visited
         curr_cell[2] = "v"
+        prev_visited.append(curr_cell)
         
         
     print(adj(graph, initial_position))
@@ -116,7 +120,7 @@ def navigation_edges(level, cell):
                     neighbor_weight = 1;
                 if abs(i+j)% 2 == 1:
                     neighbor_weight *= sqrt2;
-                tple = list((neighbor_weight, tuple(neighbor_cell), "uv", "not_discovered")) # we need something here to determine if cell has been previously visited, or is a wall, and thus needs no further consideration. 
+                tple = list((neighbor_weight, tuple(neighbor_cell), "uv", "not_discovered")) # we need something here to determine if cell has been previously visited, and thus needs no further consideration. 
                 return_list.append( tple)
             except IndexError:
                 print("whoops out of bounds!")

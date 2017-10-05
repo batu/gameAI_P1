@@ -40,12 +40,18 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         if curr_cell[1] == destination:
             # need to calculate path and return it here
             if (DEBUG == True):
-                print("Success! Path found!")
+                print("Success! Path found! Distance: ")
+                print(curr_cell[0])
+                #print("Prev visited: ")
+                #print(prev_visited)
                 return
         else:
             neighboor_list = adj(graph, curr_cell[1]) # pass coordinates of current cell to navigation edges, to find all neighboors
             for adj_cell in neighboor_list:
-                if any(i[1] == adj_cell[1] for i in prev_visited): continue
+                
+                # check if prev visited or wall
+                if any(i[1] == adj_cell[1] for i in prev_visited) or (adj_cell[0] == inf): continue 
+                    
                 adj_cell[0] = adj_cell[0] + curr_cell[0] # add current distance to neighboor distances for comparison
                 
                 #check if cell already in heap
@@ -65,7 +71,7 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         prev_visited.append(curr_cell)
         
         
-    print(adj(graph, initial_position))
+    #print(adj(graph, initial_position))
     pass
 	
     
@@ -120,7 +126,7 @@ def navigation_edges(level, cell):
                     neighbor_weight = 1;
                 if abs(i+j)% 2 == 1:
                     neighbor_weight *= sqrt2;
-                tple = list((neighbor_weight, tuple(neighbor_cell), "uv", "not_discovered")) # we need something here to determine if cell has been previously visited, and thus needs no further consideration. 
+                tple = list((neighbor_weight, tuple(neighbor_cell), "uv", "not_discovered"))
                 return_list.append( tple)
             except IndexError:
                 print("whoops out of bounds!")
@@ -188,7 +194,7 @@ def cost_to_all_cells(filename, src_waypoint, output_filename):
 
 
 if __name__ == '__main__':
-    filename, src_waypoint, dst_waypoint = '../input/example.txt', 'a','e'
+    filename, src_waypoint, dst_waypoint = '../input/example.txt', 'a','z'
     
     # Use this function call to find the route between two waypoints.
     test_route(filename, src_waypoint, dst_waypoint)

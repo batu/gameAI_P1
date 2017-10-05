@@ -25,8 +25,7 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     
     # establish start of path such that:
     # cell = tuple(distance from start, coordinate, state (v for visited, uv for unvisited), parent coordinate)
-    source_cell = [0, initial_position, "v", None]
-    source_cell = tuple(source_cell)
+    source_cell = [0, initial_position, "uv", None]
     if (DEBUG == True):
         print("Source Cell: ")
         print(source_cell)
@@ -52,14 +51,20 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
                     # if true, compare distances. If new path yields shorter distance, update
                     if prev_queued[0] > adj_cell[0]:
                         prev_queued[0] = adj_cell[0]
+                        prev_queued[3] = curr_cell[1]
                         
                 else: # not already in heap, so we need to add it
+                    adj_cell[3] = curr_cell[1] # set current cell as parent
                     heappush(pending_heap, adj_cell)
                     
+        # finally, mark current cell as visited
+        curr_cell[2] = "v"
+        
+        
     print(adj(graph, initial_position))
     pass
 	
-    [1]
+    
 def dijkstras_shortest_path_to_all(initial_position, graph, adj):
     """ Calculates the minimum cost to every reachable cell in a graph from the initial_position.
 

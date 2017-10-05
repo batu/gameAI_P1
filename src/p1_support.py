@@ -4,7 +4,7 @@ from math import inf
 from csv import writer
 
 WALL = 'X'
-DEBUG = True;
+DEBUG = False;
 
 def load_level(filename):
     """ Loads a level from a given text file.
@@ -17,6 +17,7 @@ def load_level(filename):
         a mapping of locations to waypoints (dict).
 
     """
+
     walls = set()
     spaces = {}
     waypoints = {}

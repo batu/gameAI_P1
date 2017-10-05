@@ -5,8 +5,6 @@ DEBUG = True;
 
 def dijkstras_shortest_path(initial_position, destination, graph, adj):
     """ Searches for a minimal cost path through a graph using Dijkstra's algorithm.
-
-
     Args:
         initial_position: The initial cell from which the path extends.
         destination: The end location for the path.
@@ -18,8 +16,37 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         Otherwise, return None.
 
     """
-    print(adj(graph, initial_position))
-    pass
+    # Initilize the heap, dist and prev
+    heap = []
+    dist = {}
+    prev = {}
+
+    # Put the initial position, with weight 0 into
+    dist[initial_position] = 0
+    prev[initial_position] = None
+    active = tuple([0,initial_position]);
+    heappush(heap, active)
+    #(weight, (x,y))
+    while heap:
+        active = heappop(heap)
+        neighbours = adj(graph, active[1])
+        for considered in neighbours:
+            alt_val = active[0] + considered[0]
+            if considered[1] not in dist or alt_val < dist[considered[1]]:
+                considered = tuple([alt_val,considered[1]])
+                dist[considered[1]] = alt_val
+                prev[considered[1]] = active[1]
+                if considered in heap: heap.remove(considered)
+                heappush(heap, considered)
+
+    #Get the path
+    path = []
+    head = destination
+    while prev[head]:
+        path.append(prev[head])
+        head = prev[head]
+    return path
+
 
 
 def dijkstras_shortest_path_to_all(initial_position, graph, adj):
@@ -33,9 +60,35 @@ def dijkstras_shortest_path_to_all(initial_position, graph, adj):
     Returns:
         A dictionary, mapping destination cells to the cost of a path from the initial_position.
     """
-    dummy_dic = {}
-    return dummy_dic;
-    pass
+
+    heap = []
+    dist = {}
+    prev = {}
+
+    # Put the initial position, with weight 0 into
+    dist[initial_position] = 0
+    prev[initial_position] = None
+    active = tuple([0,initial_position]);
+    heappush(heap, active)
+
+    #While the heap has something in it, it means there is unexplored nodes.
+    while heap:
+        # set the active node and get its neighbors
+        active = heappop(heap)
+        neighbours = adj(graph, active[1])
+        #forevery neighbor compare its current value to the alternate path
+        # that can be reached through the active node.
+        # Also, make sure to check whether the cell is in our dictionary.
+        # Keep track of the parent of each node
+        for considered in neighbours:
+            alt_val = active[0] + considered[0]
+            if considered[1] not in dist or alt_val < dist[considered[1]]:
+                considered = tuple([alt_val,considered[1]])
+                dist[considered[1]] = alt_val
+                prev[considered[1]] = active[1]
+                if considered in heap: heap.remove(considered)
+                heappush(heap, considered)
+    return dist
 
 
 def navigation_edges(level, cell):
@@ -58,9 +111,12 @@ def navigation_edges(level, cell):
     walls = level["walls"]
     waypoints = level["waypoints"]
     sqrt2 = sqrt(2);
+
+
     for i in range(-1,2):
         for j in range(-1, 2):
             try:
+                if i == 0 and j == 0: continue
                 neighbor_cell = list();
                 neighbor_cell.append(cell[0] + i);
                 neighbor_cell.append(cell[1] + j);
@@ -70,20 +126,21 @@ def navigation_edges(level, cell):
                     neighbor_weight = inf;
                 elif tuple(neighbor_cell) in waypoints.keys():
                     neighbor_weight = 1;
+                else:
+                    continue
                 if abs(i+j)% 2 == 1:
                     neighbor_weight *= sqrt2;
-                tple = (neighbor_cell), neighbor_weight
+                tple = (neighbor_weight, tuple(neighbor_cell))
                 return_list.append( tple)
             except IndexError:
                 print("whoops out of bounds!")
-    print(return_list)
+
+    return return_list
+
     #print(list(level["walls"])[0:5]);               # (x,y) [(11, 11), (14, 4)]
     #print(list(level["spaces"].items())[0:5]);      # ((x,y), weight) [((1, 1), 3.0), ((2, 1), 2.0)]
     #print(list(level["waypoints"].items())[0:5]);   # (waypoint, (x,y)) [('b', (18, 2)), ('e', (8, 6))]
 
-
-
-    pass
 
 
 def test_route(filename, src_waypoint, dst_waypoint):

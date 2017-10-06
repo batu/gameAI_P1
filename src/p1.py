@@ -27,11 +27,17 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     active = tuple([0,initial_position]);
     heappush(heap, active)
     #(weight, (x,y))
+    found = False
     while heap:
         active = heappop(heap)
+        if active[1] == destination:
+            found = True
+            print("Found!")
+            break
         neighbours = adj(graph, active[1])
         for considered in neighbours:
             alt_val = active[0] + considered[0]
+            if active[0] == inf: continue
             if considered[1] not in dist or alt_val < dist[considered[1]]:
                 considered = tuple([alt_val,considered[1]])
                 dist[considered[1]] = alt_val
@@ -42,9 +48,15 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     #Get the path
     path = []
     head = destination
+    #this might send it into an infinite loop.
+    count = 0;
+    if not found:
+        return path;
+
     while prev[head]:
         path.append(prev[head])
         head = prev[head]
+
     return path
 
 
@@ -193,7 +205,7 @@ def cost_to_all_cells(filename, src_waypoint, output_filename):
 
 
 if __name__ == '__main__':
-    filename, src_waypoint, dst_waypoint = '../input/example.txt', 'a','e'
+    filename, src_waypoint, dst_waypoint = '../input/test_maze.txt', 'a','e'
 
     # Use this function call to find the route between two waypoints.
     test_route(filename, src_waypoint, dst_waypoint)

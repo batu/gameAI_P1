@@ -8,7 +8,7 @@ class Test_P1(unittest.TestCase):
             filename = "../input/test_trivial.txt"
             path = p1.unit_test_route(filename, self.src_waypoint, self.dst_waypoint)
             correct_path = [(1,1)]
-            
+
             path.sort()
             correct_path.sort()
             self.assertEqual(path, correct_path)

@@ -32,7 +32,6 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         active = heappop(heap)
         if active[1] == destination:
             found = True
-            print("Found!")
             break
         neighbours = adj(graph, active[1])
         for considered in neighbours:
@@ -153,6 +152,28 @@ def navigation_edges(level, cell):
     #print(list(level["spaces"].items())[0:5]);      # ((x,y), weight) [((1, 1), 3.0), ((2, 1), 2.0)]
     #print(list(level["waypoints"].items())[0:5]);   # (waypoint, (x,y)) [('b', (18, 2)), ('e', (8, 6))]
 
+
+def unit_test_route(filename, src_waypoint, dst_waypoint):
+    """ Loads a level, searches for a path between the given waypoints, and displays the result.
+
+    Args:
+        filename: The name of the text file containing the level.
+        src_waypoint: The character associated with the initial waypoint.
+        dst_waypoint: The character associated with the destination waypoint.
+
+    """
+
+    # Load and display the level.
+    level = load_level(filename)
+
+    # Retrieve the source and destination coordinates from the level.
+    src = level['waypoints'][src_waypoint]
+    dst = level['waypoints'][dst_waypoint]
+
+    # Search for and display the path from src to dst.
+    path = dijkstras_shortest_path(src, dst, level, navigation_edges)
+
+    return path
 
 
 def test_route(filename, src_waypoint, dst_waypoint):

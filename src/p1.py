@@ -1,7 +1,7 @@
 from p1_support import load_level, show_level, save_level_costs
 from math import inf, sqrt
 from heapq import heappop, heappush
-DEBUG = True;
+DEBUG = False;
 
 def dijkstras_shortest_path(initial_position, destination, graph, adj):
     """ Searches for a minimal cost path through a graph using Dijkstra's algorithm.
@@ -47,8 +47,7 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     #Get the path
     path = []
     head = destination
-    #this might send it into an infinite loop.
-    count = 0;
+
     if not found:
         return path;
 
